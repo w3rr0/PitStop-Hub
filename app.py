@@ -53,9 +53,6 @@ def index():
 def login():
     """Log user in"""
 
-    # Forget any user_id
-    # session.clear()
-
     # User submitted a form
     if request.method == "POST":
         # Ensure username was submitted

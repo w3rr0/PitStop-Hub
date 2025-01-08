@@ -26,22 +26,14 @@
             </table>
             </div>
             <!-- Card with team previev -->
-            <div class="card" style="width: 18rem;">
+            <div class="card">
                 <img src="{{ selected.get('logo-link') }}" class="card-img-top" alt="{{ selected.name }} logo">
                 <div class="card-body">
-                  <h5 class="card-title">{{ selected.name }}</h5>
+                  <h2 class="card-title" style="padding: 5px;">{{ selected.name }}</h2>
                   <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Add to favorites</a>
+                  <a href="#" class="btn btn-primary" style="padding: 5px;">Add to favorites</a>
                 </div>
               </div>
-            <!-- <div class="summary-container box">
-                <div style="height: 300px;">
-                    <img src="{{ selected.get('logo-link') }}" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
-                </div>
-                <h2>
-                    {{ selected.name }}
-                </h2>
-            </div> -->
           </div>  
         </p>
       {% else %}
