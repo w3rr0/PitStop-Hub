@@ -1,0 +1,39 @@
+{% extends "layout.html" %} {% block title %} Races {% endblock %} {% block main
+%}
+{% if seasons %}<h1>Select a season</h1>{% elif results %}<h1>Races in {{ season }}</h1>{% else %}<h1>No results found</h1>{% endif %}
+{% if results %}
+<p class="lead">
+  TOTAL RESULTS: {{ results }}
+  {% if seasons %}
+  <div class="btn-container">
+    {% for season in seasons %}
+      <a href="/races?season={{ season }}" class="btn btn-light btn-season">
+        {{ season }}
+      </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <table class="table table-striped table-bordered align-middle">
+    <thread>
+      <tr>
+          <th>#</th>
+          <th>Circuit</th>
+          <th>Name</th>
+          <th>Date</th>
+      </tr>
+    </thread>
+    <tbody>
+      {% for result in data %}
+          <tr>
+              <td>{{ loop.index }}</td>
+              <td><img class="circuit-img" src="{{ result.get('circuit_image_link') }}" alt="Circuit"></td>
+              <td>{{ result.circuit_name }}</td>
+              <td>{{ result.date }}</td>
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table> 
+</p>
+{% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block title %} Competitions {% endblock %} {%
+block main %}
+{% if results %}
+<h1>All competitions</h1>
+<p class="lead">
+  TOTAL RESULTS: {{ results }}
+    <table class="table table-striped table-bordered">
+      <thread>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Location</th>
+        </tr>
+      </thread>
+      <tbody>
+        {% for result in data %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ result.name }}</td>
+                <td>{{ result.city }}, {{ result.country }}</td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>  
+</p>
+{% else %}
+    <h1>No results found</h1>
+{% endif %}
+{% endblock %}
