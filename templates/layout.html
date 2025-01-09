@@ -27,7 +27,15 @@
     <title>SCL: {% block title %}{% endblock %}</title>
   </head>
 
-  <body class="d-flex flex-column min-vh-100">
+  <body
+    class="d-flex flex-column min-vh-100"
+    {%
+    block
+    background
+    %}{%
+    endblock
+    %}
+  >
     <nav class="bg-light border navbar navbar-expand-md navbar-light">
       <div class="container-fluid">
         <!-- Redirect to the home page when clickied -->
