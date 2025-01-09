@@ -13,27 +13,51 @@
     {% endfor %}
   </div>
   {% else %}
-  <table class="table table-striped table-bordered align-middle">
-    <thread>
-      <tr>
-          <th>#</th>
-          <th>Circuit</th>
-          <th>Name</th>
-          <th>Date</th>
-      </tr>
-    </thread>
-    <tbody>
-      {% for result in data %}
+  <div class="content-container">
+    <div class="table-wrapper">
+      <table class="table table-bordered align-middle">
+        <thead>
           <tr>
-              <td>{{ loop.index }}</td>
-              <td><img class="circuit-img" src="{{ result.get('circuit_image_link') }}" alt="Circuit"></td>
-              <td>{{ result.circuit_name }}</td>
-              <td>{{ result.date }}</td>
+            <th>#</th>
+            <th>Circuit</th>
+            <th>Name</th>
+            <th>Date</th>
           </tr>
-      {% endfor %}
-    </tbody>
-  </table> 
+        </thead>
+        <tbody>
+          {% for result in data %}
+          <tr onclick="postToUrl('/races?season={{ season }}', {selected_id: '{{ result.id }}'})">
+            <td>{{ loop.index }}</td>
+            <td><img class="circuit-img" src="{{ result.get('circuit_image_link') }}" alt="Circuit"></td>
+            <td>{{ result.circuit_name }}</td>
+            <td>{{ result.date }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+      <div class="card">
+        <img src="{{ selected.get('circuit_image_link') }}" class="card-img-top" alt="{{ selected.circuit_name }} image">
+        <div class="card-body">
+          <h2 class="card-title" style="padding: 5px;">{{ selected.circuit_name }}</h2>
+          <div class="card-text" style="padding: 15px;">
+            <p>Date: {{ selected.date }}</p>
+            <p>Location: {{ selected.location }}</p>
+            <p>Distance: {{ selected.distance }}</p>
+            <p>Weather: {{ selected.weather }}</p>
+            <p>Best time: {{ selected.best_time }}</p>
+            <p>Laps count: {{ selected.laps_count }}</p>
+            <p>Status: {{ selected.status }}</p>
+          </div>
+          <!-- Dodawanie do ulubionych -->
+          <a href="#" class="btn btn-warning" style="padding: 10px;">Add to favorites</a>
+        </div>
+    </div>
+  </div>
+  {% endif %}
 </p>
 {% endif %}
-{% endif %}
+
+<!-- Load JavaScript file -->
+<script src="{{ url_for('static', filename='scripts.js') }}"></script>
 {% endblock %}

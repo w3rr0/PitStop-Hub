@@ -168,7 +168,7 @@ def teams():
 
     return render_template("teams.html", results=results, data=data, selected=selected)
 
-@app.route("/races")
+@app.route("/races", methods=["GET", "POST"])
 @login_required
 def races():
     """Show seasons and races"""
@@ -196,8 +196,17 @@ def races():
                     "location": f"{result["competition"]["name"]}, {result["competition"]["location"]["city"]}, {result['competition']['location']['country']}",
                 }
             )
+
+        if results:
+            selected_id = int(request.form.get("selected_id", data[0]["id"]))
+            for race in data:
+                if race["id"] == selected_id:
+                    selected = race
+                    break
+        else:
+            selected = None
         
-        return render_template("races.html", results=results, data=data, season=season)
+        return render_template("races.html", results=results, data=data, season=season, selected=selected)
 
     # Before choosing a season
     else:
