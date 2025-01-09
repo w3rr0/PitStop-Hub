@@ -73,14 +73,15 @@ def login():
         with open('users.csv', mode='r') as file:
             for line in file:
                 username, hash_pas = line.strip().split(', ')
-            rows.append({'id': 1, 'username': username, 'hash': hash_pas})
+                if username == request.form.get("username"):
+                    rows.append({'id': 1, 'username': username, 'hash': hash_pas})
 
         # Ensure username exists and password is correct
         # if len(rows) != 1 or not check_password_hash(
         #     rows[0]["hash"], request.form.get("password")
         # ):
         #     return apology("invalid username and/or password", 403)
-        if len(rows) != 1 or hash_pas != request.form.get("password"):
+        if len(rows) != 1 or not check_password_hash(hash_pas ,request.form.get("password")):
             flash("Invalid username and/or password")
             return redirect("/login")
             
@@ -91,7 +92,6 @@ def login():
 
     # User clicked a link or was redirected
     else:
-        # flash("Test message") - jedyna wiadomość która się wyświetla na stronie
         return render_template("login.html")
     
 @app.route("/logout")
@@ -103,6 +103,65 @@ def logout():
 
     # Redirect user to login form
     return redirect("/")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+
+    # Forget any user_id
+    session.clear()
+
+    if request.method == "POST":
+
+        # check if username is provided
+        if not request.form.get("username"):
+            flash("Must provide username")
+            return redirect("/register")
+
+        # check if password is provided
+        elif not request.form.get("password"):
+            flash("Must provide password")
+            return redirect("/register")
+
+        # check if confirmation match password
+        elif request.form.get("password") != request.form.get("confirmation"):
+            flash("Passwords don't match")
+            return redirect("/register")
+
+        # check if username already exist
+        # rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        # if len(rows) != 0:
+        #     return apology("username already exists", 400)
+        with open('users.csv', mode='r') as file:
+            rows = []
+            for line in file:
+                username, hash_pas = line.strip().split(', ')
+                if username == request.form.get("username"):
+                    rows.append({'id': 1, 'username': username, 'hash': hash_pas})
+        if len(rows) != 0:
+            flash("Username already exists")
+            return redirect("/register")
+
+        # insert new user into database
+        # db.execute("INSERT INTO users (username, hash) VALUES(?, ?)",
+        #            request.form.get("username"), generate_password_hash(request.form.get("password")))
+        with open('users.csv', mode='a') as file:
+            file.write(f"{request.form.get('username')}, {generate_password_hash(request.form.get('password'))}\n")
+
+        # remember which user is currently logged in
+        # rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+        # session["user_id"] = rows[0]["id"]
+        with open('users.csv', mode='r') as file:
+            for line in file:
+                if request.form.get('username') in line:
+                    session["user_id"] = 1
+
+        # redirect user to home page
+        return redirect("/")
+
+    # user reached route via GET (by clicking a link or via redirect)
+    else:
+        return render_template("register.html")
 
 @app.route("/competitions")
 @login_required
