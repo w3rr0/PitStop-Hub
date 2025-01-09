@@ -30,8 +30,21 @@
                 <img src="{{ selected.get('logo-link') }}" class="card-img-top" alt="{{ selected.name }} logo">
                 <div class="card-body">
                   <h2 class="card-title" style="padding: 5px;">{{ selected.name }}</h2>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary" style="padding: 5px;">Add to favorites</a>
+                  <div class="card-text" style="padding: 15px;">
+                    <p>Base: {{ selected.base }}</p>
+                    <p>Entry year: {{ selected.entry_year }}</p>
+                    <p>Championships: {{ selected.championships }}</p>
+                    <p>Pole positions: {{ selected.pole_positions }}</p>
+                    <p>Fastest laps: {{ selected.fastest_laps }}</p>
+                    <p>President: {{ selected.president }}</p>
+                    <p>Director: {{ selected.director }}</p>
+                    <p>Technical manager: {{ selected.technical_manager }}</p>
+                    <p>Chassis: {{ selected.chassis }}</p>
+                    <p>Engine: {{ selected.engine }}</p>
+                    <p>Tyres: {{ selected.tyres }}</p>
+                  </div>
+                  <!-- Dodawanie do ulubionych -->
+                  <a href="#" class="btn btn-warning" style="padding: 10px;">Add to favorites</a>
                 </div>
               </div>
           </div>  

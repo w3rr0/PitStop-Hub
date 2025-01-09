@@ -144,7 +144,7 @@ def teams():
                 "name": result["name"],
                 "logo-link": result.get("logo", ""),
                 "base": result.get("base", "Unknown"),
-                "entry-year": result.get("first_team_entry", "Unknown"),
+                "entry_year": result.get("first_team_entry", "Unknown"),
                 "championships": result.get("world_championships", 0),
                 "pole_positions": result.get("pole_positions", "Unknown"),
                 "fastest_laps": result.get("fastest_laps", "Unknown"),
