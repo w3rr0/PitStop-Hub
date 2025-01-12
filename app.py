@@ -9,10 +9,18 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 # For helpers functions
 from helpers import login_required
+# For database
+from flask_sqlalchemy import SQLAlchemy
+
+# Configure application
+app = Flask(__name__)
 
 # Load api key from environment
 load_dotenv()
 api_key = os.getenv("API_KEY")
+
+# Load secret key from environment
+app.secret_key = os.getenv("SECRET_KEY")
 
 # Configure API
 host = "https://v1.formula-1.api-sports.io"
@@ -21,17 +29,29 @@ headers = {
     "x-rapidapi-key": api_key
 }
 
-# Configure application
-app = Flask(__name__)
-
-# Load secret key from environment
-app.secret_key = os.getenv("SECRET_KEY")
-
 # Configure session
 app.config["SESSION_PERMANENT"] = False     # Session will be cleared when browser is closed
 app.config["SESSION_TYPE"] = "filesystem"   # Session will be stored on server's filesystem instead of cookies
 Session(app)                                # Initialize session
 
+# Configure database
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///app.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    __tablename__ = "users"
+    
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Kolumna id, klucz główny
+    username = db.Column(db.String(100), unique=True, nullable=False)  # Kolumna username (unikalna)
+    hash = db.Column(db.String(255), nullable=False)  # Kolumna hash (hasło użytkownika)
+
+    def __repr__(self):
+        return f"<User {self.username}>"
+    
+# Create all tables in the database
+with app.app_context():
+    db.create_all()
 
 # Ensure responses aren't cached (Called after each HTTP response)
 @app.after_request
@@ -66,28 +86,16 @@ def login():
             return redirect("/login")
 
         # Query database for username
-        # rows = db.execute(
-        #     "SELECT * FROM users WHERE username = ?", request.form.get("username")
-        # )
-        rows = []
-        with open('users.csv', mode='r') as file:
-            for line in file:
-                username, hash_pas = line.strip().split(', ')
-                if username == request.form.get("username"):
-                    rows.append({'id': 1, 'username': username, 'hash': hash_pas})
+        rows = User.query.filter_by(username=request.form.get("username")).all()
 
         # Ensure username exists and password is correct
-        # if len(rows) != 1 or not check_password_hash(
-        #     rows[0]["hash"], request.form.get("password")
-        # ):
-        #     return apology("invalid username and/or password", 403)
-        if len(rows) != 1 or not check_password_hash(hash_pas ,request.form.get("password")):
+        if len(rows) != 1 or not check_password_hash(rows[0].hash ,request.form.get("password")):
             flash("Invalid username and/or password")
             return redirect("/login")
             
         # Clear session before logging in and remember which user has logged in
         session.clear()
-        session["user_id"] = rows[0]["id"]
+        session["user_id"] = rows[0].id
         return redirect("/")
 
     # User clicked a link or was redirected
@@ -128,33 +136,23 @@ def register():
             flash("Passwords don't match")
             return redirect("/register")
 
-        # check if username already exist
-        # rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
-        # if len(rows) != 0:
-        #     return apology("username already exists", 400)
-        with open('users.csv', mode='r') as file:
-            rows = []
-            for line in file:
-                username, hash_pas = line.strip().split(', ')
-                if username == request.form.get("username"):
-                    rows.append({'id': 1, 'username': username, 'hash': hash_pas})
+        # Check if username already exist
+        # Zabezpieczyć przed SQL injection !!!!!!!!!!!!!!!!!!!!!!!!!
+        rows = User.query.filter_by(username=request.form.get("username")).all()
         if len(rows) != 0:
             flash("Username already exists")
             return redirect("/register")
 
-        # insert new user into database
-        # db.execute("INSERT INTO users (username, hash) VALUES(?, ?)",
-        #            request.form.get("username"), generate_password_hash(request.form.get("password")))
-        with open('users.csv', mode='a') as file:
-            file.write(f"{request.form.get('username')}, {generate_password_hash(request.form.get('password'))}\n")
+        # Insert new user into database
+        username = request.form.get('username')
+        hash = generate_password_hash(request.form.get('password'))
+        new_user = User(username=username, hash=hash)
+        db.session.add(new_user)
+        db.session.commit()
 
-        # remember which user is currently logged in
-        # rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
-        # session["user_id"] = rows[0]["id"]
-        with open('users.csv', mode='r') as file:
-            for line in file:
-                if request.form.get('username') in line:
-                    session["user_id"] = 1
+        # Remember which user is currently logged in
+        user_id = User.query.filter_by(username=username).with_entities(User.id).first()
+        session["user_id"] = user_id[0]
 
         # redirect user to home page
         return redirect("/")
