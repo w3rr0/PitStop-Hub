@@ -137,7 +137,6 @@ def register():
             return redirect("/register")
 
         # Check if username already exist
-        # Zabezpieczyć przed SQL injection !!!!!!!!!!!!!!!!!!!!!!!!!
         rows = User.query.filter_by(username=request.form.get("username")).all()
         if len(rows) != 0:
             flash("Username already exists")
