@@ -48,10 +48,11 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.username}>"
-    
-# Create all tables in the database (Call only once before first run, if you don't create database manually)
-# with app.app_context():
-#     db.create_all()
+
+# Initialize database before first request
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 # Ensure responses aren't cached (Called after each HTTP response)
 @app.after_request
