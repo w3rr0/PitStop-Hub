@@ -20,10 +20,11 @@ page {% endblock %} {% block main %}
   <div class="d-flex flex-column" style="width: 30%; padding-left: 10px">
     <div class="box theme-container">
       <label class="switch">
-        <input type="checkbox" id="toggle-switch" />
+        <input type="checkbox" id="toggle-switch" {% if theme == "Dark"
+        %}checked{% endif %}/>
         <span class="slider"></span>
       </label>
-      <p>Theme: <span id="status">Light</span></p>
+      <p>Theme: <span id="status">{{ theme }}</span></p>
     </div>
     <div class="box" style="height: 80%; margin-top: 10px">
       <h1>server status</h1>
@@ -31,5 +32,5 @@ page {% endblock %} {% block main %}
   </div>
 </div>
 
-<script src="static/scripts.js"></script>
+<script src="static/switch.js"></script>
 {% endblock %}

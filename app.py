@@ -76,7 +76,7 @@ def toggle_mode():
 @app.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    return render_template("index.html", theme=session.get("theme", "light"))
 
 
 @app.route("/login", methods=["GET", "POST"])
