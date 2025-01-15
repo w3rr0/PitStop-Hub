@@ -50,8 +50,7 @@ class User(db.Model):
         return f"<User {self.username}>"
 
 # Initialize database before first request
-@app.before_first_request
-def create_tables():
+with app.app_context():
     db.create_all()
 
 # Ensure responses aren't cached (Called after each HTTP response)

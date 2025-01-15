@@ -18,12 +18,18 @@ page {% endblock %} {% block main %}
     </div>
   </div>
   <div class="d-flex flex-column" style="width: 30%; padding-left: 10px">
-    <div class="box" style="height: 20%; margin-bottom: 10px">
-      <h1>light/dark mode</h1>
+    <div class="box theme-container">
+      <label class="switch">
+        <input type="checkbox" id="toggle-switch" />
+        <span class="slider"></span>
+      </label>
+      <p>Theme: <span id="status">Light</span></p>
     </div>
     <div class="box" style="height: 80%; margin-top: 10px">
       <h1>server status</h1>
     </div>
   </div>
 </div>
+
+<script src="static/scripts.js"></script>
 {% endblock %}

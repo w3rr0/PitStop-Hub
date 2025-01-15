@@ -17,3 +17,10 @@ function postToUrl(url, params) {
   document.body.appendChild(form);
   form.submit();
 }
+
+const toggleSwitch = document.getElementById("toggle-switch");
+const statusText = document.getElementById("status");
+
+toggleSwitch.addEventListener("change", () => {
+  statusText.textContent = toggleSwitch.checked ? "Dark" : "Light";
+});
