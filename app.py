@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import requests
 import os
 # For Flask app
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 # For password hashing
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -48,6 +48,8 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.username}>"
+    
+LIGHT_MODE = True
 
 # Initialize database before first request
 with app.app_context():
@@ -62,6 +64,14 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+@app.route("/change-theme", methods=["POST"])
+@login_required
+def toggle_mode():
+    """Handle the toggle switch mode change"""
+    data = request.get_json()
+    mode = data.get("mode")
+    print(f"Mode changed to: {mode}")
+    return jsonify({"Result": "Success", "mode": mode})
 
 @app.route("/")
 @login_required
