@@ -70,7 +70,7 @@ def toggle_mode():
     """Handle the toggle switch mode change"""
     data = request.get_json()
     mode = data.get("mode")
-    print(f"Mode changed to: {mode}")
+    session["theme"] = mode
     return jsonify({"Result": "Success", "mode": mode})
 
 @app.route("/")
