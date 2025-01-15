@@ -1,7 +1,8 @@
 {% extends "layout.html" %} {% block background %}style="background-image:
-url('/static/background.jpg'); background-size: cover; background-repeat:
-no-repeat; background-position: center;"{% endblock %} {% block title %} Home
-page {% endblock %} {% block main %}
+url('/static/background{% if theme == "Dark" %}_night{% endif %}.jpg');
+background-size: cover; background-repeat: no-repeat; background-position:
+center;"{% endblock %} {% block title %} Home page {% endblock %} {% block main
+%}
 <div class="d-flex flex-row main-container">
   <div style="width: 35%; height: 100%; margin-right: 10px">
     <div class="box main-container">
