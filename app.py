@@ -98,8 +98,8 @@ def add_favorite():
 
     if data_type == "race":
         return render_template("races.html", results=results, data=data, season=season, selected=selected)
-    else:
-        return jsonify({"Result": "Success"})
+    elif data_type == "team":
+        return render_template("teams.html", results=results, data=data, selected=selected)
 
 @app.route("/change-theme", methods=["POST"])
 @login_required
