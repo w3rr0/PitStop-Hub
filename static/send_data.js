@@ -1,3 +1,4 @@
+// Send data to backedn using POST request
 function postToUrl(url, params) {
   var form = document.createElement("form");
   form.method = "POST";
