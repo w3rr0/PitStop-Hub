@@ -49,8 +49,18 @@
             <p>Laps count: {{ selected.laps_count }}</p>
             <p>Status: {{ selected.status }}</p>
           </div>
-          <!-- Dodawanie do ulubionych -->
-          <a href="#" class="btn btn-warning" style="padding: 10px;">Add to favorites</a>
+          <!-- Add to favorites -->
+           <form action="/add-favorite" method="POST">
+                <!-- Data needed to rerender the page -->
+                <input type="hidden" name="results" value="{{ results }}">
+                <input type="hidden" name="data" value="{{ data }}">
+                <input type="hidden" name="season" value="{{ season }}">
+                <!-- Data needed to add a favorite -->
+                <input type="hidden" name="type" value="race">
+                <input type="hidden" name="selected" value="{{ selected }}">
+                <!-- Confirm adding to favorites -->
+                <button type="submit" class="btn btn-warning" style="padding: 10px;">Add to favorites</button>
+           </form>
         </div>
     </div>
   </div>

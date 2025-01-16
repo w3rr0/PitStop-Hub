@@ -11,6 +11,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import login_required
 # For database
 from flask_sqlalchemy import SQLAlchemy
+# For converting dict to JSON
+from json import dumps
 
 # Configure application
 app = Flask(__name__)
@@ -75,9 +77,33 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+@app.route("/add-favorite", methods=["POST"])
+@login_required
+def add_favorite():
+    """Add an element to favorites"""
+
+    # Data needed to add a favorite
+    selected = request.form.get("selected")
+    data_type = request.form.get("type")
+
+    # Data needed to rerender the page
+    season = request.args.get("season")
+    results = request.form.get("results")
+    data = request.form.get("data")
+
+    # Insert new favorite into favorites database
+    new_favorite = Favorite(type=data_type, data=dumps(selected), user_id=session["user_id"])
+    db.session.add(new_favorite)
+    db.session.commit()
+
+    if data_type == "race":
+        return render_template("races.html", results=results, data=data, season=season, selected=selected)
+    else:
+        return jsonify({"Result": "Success"})
+
 @app.route("/change-theme", methods=["POST"])
 @login_required
-def toggle_mode():
+def change_theme():
     """Handle the toggle switch mode change"""
     data = request.get_json()
     mode = data.get("mode")
@@ -252,7 +278,7 @@ def races():
 
     # After selecting the season
     if request.args.get("season"):
-        season= request.args.get("season")
+        season = request.args.get("season")
 
         response = requests.get(host+"/races", headers=headers, params={"season": season}).json()
 
