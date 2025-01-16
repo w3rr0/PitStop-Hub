@@ -91,15 +91,28 @@ def add_favorite():
     results = request.form.get("results")
     data = request.form.get("data")
 
-    # Insert new favorite into favorites database
-    new_favorite = Favorite(type=data_type, data=dumps(selected), user_id=session["user_id"])
-    db.session.add(new_favorite)
-    db.session.commit()
+    # Check if selected is in the favorites database
+    selected_checked = False
+    rows = Favorite.query.filter_by(type="team", user_id=session["user_id"]).get(data)
+    for row in rows:
+        if row.data[id] == request.form.get("selected_id"):
+            selected_checked = True
+            break
+
+    # Check if favorite is already in the database
+    if selected_checked:
+        # Remove from favorites
+        pass
+    else:
+        # Add to favorites
+        new_favorite = Favorite(type=data_type, data=dumps(selected), user_id=session["user_id"])
+        db.session.add(new_favorite)
+        db.session.commit()
 
     if data_type == "race":
-        return render_template("races.html", results=results, data=data, season=season, selected=selected)
+        return render_template("races.html", results=results, data=data, season=season, selected=selected, selected_checked=selected_checked)
     elif data_type == "team":
-        return render_template("teams.html", results=results, data=data, selected=selected)
+        return render_template("teams.html", results=results, data=data, selected=selected, selected_checked=selected_checked)
 
 @app.route("/change-theme", methods=["POST"])
 @login_required
@@ -269,7 +282,15 @@ def teams():
     else:
         selected = None
 
-    return render_template("teams.html", results=results, data=data, selected=selected)
+    # Check if selected is in the favorites database
+    selected_checked = False
+    rows = Favorite.query.filter_by(type="team", user_id=session["user_id"]).get(data)
+    for row in rows:
+        if row.data[id] == selected_id:
+            selected_checked = True
+            break
+
+    return render_template("teams.html", results=results, data=data, selected=selected, selected_checked=selected_checked)
 
 @app.route("/races", methods=["GET", "POST"])
 @login_required
@@ -308,8 +329,16 @@ def races():
                     break
         else:
             selected = None
+
+        # Check if selected is in the favorites database
+        selected_checked = False
+        rows = Favorite.query.filter_by(type="race", user_id=session["user_id"]).get(data)
+        for row in rows:
+            if row.data[id] == selected_id:
+                selected_checked = True
+                break
         
-        return render_template("races.html", results=results, data=data, season=season, selected=selected)
+        return render_template("races.html", results=results, data=data, season=season, selected=selected, selected_checked=selected_checked)
 
     # Before choosing a season
     else:
