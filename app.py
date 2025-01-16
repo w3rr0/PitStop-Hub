@@ -42,14 +42,25 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = "users"
     
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Kolumna id, klucz główny
-    username = db.Column(db.String(100), unique=True, nullable=False)  # Kolumna username (unikalna)
-    hash = db.Column(db.String(255), nullable=False)  # Kolumna hash (hasło użytkownika)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Id, integer not null, primary key
+    username = db.Column(db.String(100), unique=True, nullable=False)  # Username, varchar(100) not null (unique)
+    hash = db.Column(db.String(255), nullable=False)  # Hash, varchar(255) not null
 
     def __repr__(self):
         return f"<User {self.username}>"
     
-LIGHT_MODE = True
+class Favorite(db.Model):
+    __tablename__ = "favorites"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)  # Id, integer not null, primary key
+    type = db.Column(db.String(100), nullable=False)  # Type, string, not null
+    data = db.Column(db.JSON, nullable=False)  # Data, JSON, not null
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  # User Id, integer, foreign key
+
+    user = db.relationship("User", backref=db.backref("favorites", lazy=True))  # Relationship with Users table
+
+    def __repr__(self):
+        return f"<Favorite {self.id}, Type: {self.type}>"
 
 # Initialize database before first request
 with app.app_context():
