@@ -1,6 +1,13 @@
-{% extends "layout.html" %} {% block title %} Races {% endblock %} {% block main
-%}
-{% if seasons %}<h1>Select a season</h1>{% elif results %}<h1>Races in {{ season }}</h1>{% else %}<h1>No results found</h1>{% endif %}
+{% extends "layout.html" %} 
+{% block title %} Races {% endblock %} 
+{% block main %}
+{% if seasons %}
+<h1>Select a season</h1>
+{% elif results %}
+<h1>Races in {{ season }}</h1>
+{% else %}
+<h1>No results found</h1>
+{% endif %}
 {% if results %}
 <p class="lead">
   TOTAL RESULTS: {{ results }}
@@ -53,13 +60,13 @@
            <form action="/add-favorite" method="POST">
                 <!-- Data needed to rerender the page -->
                 <input type="hidden" name="results" value="{{ results }}">
-                <input type="hidden" name="data" value="{{ data }}">
+                <input type="hidden" name="data" value="{{ data | tojson }}">
                 <input type="hidden" name="season" value="{{ season }}">
                 <!-- Data needed to add a favorite -->
                 <input type="hidden" name="type" value="race">
-                <input type="hidden" name="selected" value="{{ selected }}">
+                <input type="hidden" name="selected" value="{{ selected | tojson }}">
                 <!-- Confirm adding to favorites -->
-                <button type="submit" class="btn btn-warning" style="padding: 10px;">Add to favorites ☆</button>
+                <button type="submit" class="btn btn-warning" style="padding: 10px;">{% if selected_checked %}Favorites ★{% else %}Add to favorites ☆{% endif %}</button>
            </form>
         </div>
     </div>

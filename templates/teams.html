@@ -1,5 +1,6 @@
-{% extends "layout.html" %} {% block title %} Teams {% endblock %} {%
-    block main %}
+{% extends "layout.html" %} 
+{% block title %} Teams {% endblock %} 
+{% block main %}
     {% if results %}
     <h1>All Teams</h1>
     <p class="lead">
@@ -25,9 +26,9 @@
             </tbody>
             </table>
             </div>
-            <!-- Card with team previev -->
+            <!-- Card with team preview -->
             <div class="card">
-                <img src="{{ selected.get('logo-link') }}" class="card-img-top" alt="{{ selected.name }} logo">
+                <img src="{{ selected.logo-link }}" class="card-img-top" alt="{{ selected.name }} logo">
                 <div class="card-body">
                   <h2 class="card-title" style="padding: 5px;">{{ selected.name }}</h2>
                   <div class="card-text" style="padding: 15px;">
@@ -52,7 +53,7 @@
                         <input type="hidden" name="type" value="team">
                         <input type="hidden" name="selected" value="{{ selected }}">
                         <!-- Confirm adding to favorites -->
-                       <button type="submit" class="btn btn-warning" style="padding: 10px;">Add to favorites ☆</button>
+                       <button type="submit" class="btn btn-warning" style="padding: 10px;">{% if selected_checked %}Favorites ★{% else %}Add to favorites ☆{% endif %}</button>
                    </form>
                 </div>
               </div>
@@ -65,4 +66,3 @@
 <!-- Load JavaScript file -->
 <script src="{{ url_for('static', filename='send_data.js') }}"></script>
 {% endblock %}
-    

@@ -12,7 +12,8 @@ from helpers import login_required
 # For database
 from flask_sqlalchemy import SQLAlchemy
 # For converting dict to JSON
-from json import dumps
+from json import dumps, loads
+from ast import literal_eval
 
 # Configure application
 app = Flask(__name__)
@@ -82,6 +83,8 @@ def after_request(response):
 def add_favorite():
     """Add an element to favorites"""
 
+    print("Funckja została wywołana--------------------------------------------------------------------")
+
     # Data needed to add a favorite
     selected = request.form.get("selected")
     data_type = request.form.get("type")
@@ -92,10 +95,10 @@ def add_favorite():
     data = request.form.get("data")
 
     # Check if selected is in the favorites database
+    rows = [row[0] for row in Favorite.query.filter_by(type=data_type, user_id=session["user_id"]).with_entities(Favorite.data).all()]
     selected_checked = False
-    rows = Favorite.query.filter_by(type="team", user_id=session["user_id"]).get(data)
     for row in rows:
-        if row.data[id] == request.form.get("selected_id"):
+        if literal_eval(loads(row))["id"] == literal_eval(selected)["id"]:
             selected_checked = True
             break
 
@@ -267,7 +270,7 @@ def teams():
                 "president": result.get("president", "Unknown"),
                 "director": result.get("director", "Unknown"),
                 "technical_manager": result.get("technical_manager", "Unknown"),
-                'chassis': result.get("chassis", "Unknown"),
+                "chassis": result.get("chassis", "Unknown"),
                 "engine": result.get("engine", "Unknown"),
                 "tyres": result.get("tyres", "Unknown"),
             }
@@ -279,18 +282,17 @@ def teams():
             if team["id"] == selected_id:
                 selected = team
                 break
+
+        # Check if selected is in the favorites database
+        rows = [row[0] for row in Favorite.query.filter_by(type="team", user_id=session["user_id"]).with_entities(Favorite.data).all()]
+        selected_checked = False
+        for row in rows:
+            if literal_eval(loads(row))["id"] == selected_id:
+                selected_checked = True
+                break
+        return render_template("teams.html", results=results, data=data, selected=selected, selected_checked=selected_checked)
     else:
-        selected = None
-
-    # Check if selected is in the favorites database
-    selected_checked = False
-    rows = Favorite.query.filter_by(type="team", user_id=session["user_id"]).get(data)
-    for row in rows:
-        if row.data[id] == selected_id:
-            selected_checked = True
-            break
-
-    return render_template("teams.html", results=results, data=data, selected=selected, selected_checked=selected_checked)
+        return render_template("teams.html", results=results)
 
 @app.route("/races", methods=["GET", "POST"])
 @login_required
@@ -311,13 +313,13 @@ def races():
                     "id": result["id"],
                     "circuit_name": result["circuit"]["name"],
                     "circuit_image_link": result["circuit"]["image"],
-                    "date": f"{result["date"][11:16]}, {result["date"][:10]}",
+                    "date": f"{result['date'][11:16]}, {result['date'][:10]}",
                     "weather": result.get("weather", "Unknown"),
                     "status": result["status"],
                     "distance": result["distance"],
                     "best_time": result["fastest_lap"]["time"],
                     "laps_count": result["laps"]["total"],
-                    "location": f"{result["competition"]["name"]}, {result["competition"]["location"]["city"]}, {result['competition']['location']['country']}",
+                    "location": f"{result['competition']['name']}, {result['competition']['location']['city']}, {result['competition']['location']['country']}",
                 }
             )
 
@@ -327,18 +329,19 @@ def races():
                 if race["id"] == selected_id:
                     selected = race
                     break
-        else:
-            selected = None
 
-        # Check if selected is in the favorites database
-        selected_checked = False
-        rows = Favorite.query.filter_by(type="race", user_id=session["user_id"]).get(data)
-        for row in rows:
-            if row.data[id] == selected_id:
-                selected_checked = True
-                break
-        
-        return render_template("races.html", results=results, data=data, season=season, selected=selected, selected_checked=selected_checked)
+            # Check if selected is in the favorites database
+            rows = [loads(row[0]) for row in Favorite.query.filter_by(type="race", user_id=session["user_id"]).with_entities(Favorite.data).all()]
+            selected_checked = False
+            for row in rows:
+                if int(row["id"]) == selected_id:
+                    selected_checked = True
+                    break
+
+            return render_template("races.html", results=results, data=data, season=season, selected=selected, selected_checked=selected_checked)
+        else:
+            return render_template("races.html", results=results, data=data, season=season)
+
 
     # Before choosing a season
     else:
@@ -346,9 +349,8 @@ def races():
         response = requests.get(host+"/seasons", headers=headers).json()
 
         results = response["results"]
-        seasons = response["response"]
 
-        return render_template("races.html", results=results, seasons=seasons)
+        return render_template("races.html", results=results)
     
 
 @app.route("/favorites")
@@ -359,3 +361,7 @@ def favorites():
     # Make database for users favorites
 
     return render_template("favorites.html")
+
+# Runs the app in development mode only if the script was called directly
+if __name__ == "__main__":
+    app.run(debug=True)
