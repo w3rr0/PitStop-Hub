@@ -112,16 +112,10 @@ def add_favorite():
         db.session.add(new_favorite)
         db.session.commit()
 
-    print(f"results: {type(int(results))}, should be int")                  # int
-    print(f"data: {type(list(data))}, should be list")                      # to samo co niżej tylko dodatkowo w liście
-    print(f"selected: {type(literal_eval(selected))}, should be dict")      # poprawić aby w liście znajdowały się elementy nie tylko str
-    print(f"selected_checked: {type(selected_checked)}, should be bool")    # bool
-    print(not selected_checked)
-
     if data_type == "race":
-        return render_template("races.html", results=int(results), data=data, season=season, selected=selected, selected_checked=not selected_checked)
+        return render_template("races.html", results=int(results), data=literal_eval(data), season=int(season), selected=literal_eval(selected), selected_checked=not selected_checked)
     elif data_type == "team":
-        return render_template("teams.html", results=int(results), data=data, selected=selected, selected_checked=not selected_checked)
+        return render_template("teams.html", results=int(results), data=literal_eval(data), selected=literal_eval(selected), selected_checked=not selected_checked)
 
 @app.route("/change-theme", methods=["POST"])
 @login_required
