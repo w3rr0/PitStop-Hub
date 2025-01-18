@@ -83,7 +83,7 @@ def after_request(response):
 def add_favorite():
     """Add an element to favorites"""
 
-    print("Funckja została wywołana--------------------------------------------------------------------")
+    print("Favorite added!")
 
     # Data needed to add a favorite
     selected = request.form.get("selected")
@@ -112,10 +112,16 @@ def add_favorite():
         db.session.add(new_favorite)
         db.session.commit()
 
+    print(f"results: {type(int(results))}, should be int")                  # int
+    print(f"data: {type(list(data))}, should be list")                      # to samo co niżej tylko dodatkowo w liście
+    print(f"selected: {type(literal_eval(selected))}, should be dict")      # poprawić aby w liście znajdowały się elementy nie tylko str
+    print(f"selected_checked: {type(selected_checked)}, should be bool")    # bool
+    print(not selected_checked)
+
     if data_type == "race":
-        return render_template("races.html", results=results, data=data, season=season, selected=selected, selected_checked=selected_checked)
+        return render_template("races.html", results=int(results), data=data, season=season, selected=selected, selected_checked=not selected_checked)
     elif data_type == "team":
-        return render_template("teams.html", results=results, data=data, selected=selected, selected_checked=selected_checked)
+        return render_template("teams.html", results=int(results), data=data, selected=selected, selected_checked=not selected_checked)
 
 @app.route("/change-theme", methods=["POST"])
 @login_required
@@ -261,7 +267,7 @@ def teams():
             {
                 "id": result["id"],
                 "name": result["name"],
-                "logo-link": result.get("logo", ""),
+                "logo_link": result.get("logo", ""),
                 "base": result.get("base", "Unknown"),
                 "entry_year": result.get("first_team_entry", "Unknown"),
                 "championships": result.get("world_championships", 0),
