@@ -35,7 +35,7 @@
           {% for result in data %}
           <tr onclick="postToUrl('/races?season={{ season }}', {selected_id: '{{ result.id }}'})">
             <td>{{ loop.index }}</td>
-            <td><img class="circuit-img" src="{{ result.get('circuit_image_link') }}" alt="Circuit"></td>
+            <td><img class="circuit-img" src="{{ result.circuit_image_link }}" alt="Circuit"></td>
             <td>{{ result.circuit_name }}</td>
             <td>{{ result.date }}</td>
           </tr>
@@ -44,7 +44,7 @@
       </table>
     </div>
       <div class="card">
-        <img src="{{ selected.get('circuit_image_link') }}" class="card-img-top" alt="{{ selected.circuit_name }} image">
+        <img src="{{ selected.circuit_image_link }}" class="card-img-top" alt="{{ selected.circuit_name }} image">
         <div class="card-body">
           <h2 class="card-title" style="padding: 5px;">{{ selected.circuit_name }}</h2>
           <div class="card-text" style="padding: 15px;">
@@ -60,11 +60,11 @@
            <form action="/add-favorite" method="POST">
                 <!-- Data needed to rerender the page -->
                 <input type="hidden" name="results" value="{{ results }}">
-                <input type="hidden" name="data" value="{{ data | tojson }}">
+                <input type="hidden" name="data" value="{{ data }}">
                 <input type="hidden" name="season" value="{{ season }}">
                 <!-- Data needed to add a favorite -->
                 <input type="hidden" name="type" value="race">
-                <input type="hidden" name="selected" value="{{ selected | tojson }}">
+                <input type="hidden" name="selected" value="{{ selected }}">
                 <!-- Confirm adding to favorites -->
                 <button type="submit" class="btn btn-warning" style="padding: 10px;">{% if selected_checked %}Favorites ★{% else %}Add to favorites ☆{% endif %}</button>
            </form>

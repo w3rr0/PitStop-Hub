@@ -338,7 +338,7 @@ def races():
                     selected_checked = True
                     break
 
-            return render_template("races.html", results=results, data=data, season=season, selected=selected, selected_checked=selected_checked)
+            return render_template("races.html", results=results, data=(data), season=season, selected=selected, selected_checked=selected_checked)
         else:
             return render_template("races.html", results=results, data=data, season=season)
 
