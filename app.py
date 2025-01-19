@@ -331,10 +331,11 @@ def races():
                     break
 
             # Check if selected is in the favorites database
-            rows = [loads(row[0]) for row in Favorite.query.filter_by(type="race", user_id=session["user_id"]).with_entities(Favorite.data).all()]
+            rows = [literal_eval(loads(row[0])) for row in Favorite.query.filter_by(type="race", user_id=session["user_id"]).with_entities(Favorite.data).all()]
+            print(rows)
             selected_checked = False
             for row in rows:
-                if int(row["id"]) == selected_id:
+                if row["id"] == selected_id:
                     selected_checked = True
                     break
 
