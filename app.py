@@ -338,9 +338,9 @@ def races():
                     selected_checked = True
                     break
 
-            return render_template("races.html", results=results, data=(data), season=season, selected=selected, selected_checked=selected_checked)
+            return render_template("races.html", results=results, data=data, season=season, selected=selected, selected_checked=selected_checked)
         else:
-            return render_template("races.html", results=results, data=data, season=season)
+            return "Brak wyników"
 
 
     # Before choosing a season
@@ -349,8 +349,9 @@ def races():
         response = requests.get(host+"/seasons", headers=headers).json()
 
         results = response["results"]
+        seasons = response["response"]
 
-        return render_template("races.html", results=results)
+        return render_template("races.html", results=results, seasons=seasons)
     
 
 @app.route("/favorites")
