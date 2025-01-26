@@ -90,7 +90,7 @@ def add_favorite():
     data_type = request.form.get("type")
 
     # Data needed to rerender the page
-    season = request.args.get("season")
+    season = request.form.get("season")
     results = request.form.get("results")
     data = request.form.get("data")
 
