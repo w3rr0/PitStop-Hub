@@ -332,7 +332,6 @@ def races():
 
             # Check if selected is in the favorites database
             rows = [literal_eval(loads(row[0])) for row in Favorite.query.filter_by(type="race", user_id=session["user_id"]).with_entities(Favorite.data).all()]
-            print(rows)
             selected_checked = False
             for row in rows:
                 if row["id"] == selected_id:
@@ -341,7 +340,7 @@ def races():
 
             return render_template("races.html", results=results, data=data, season=season, selected=selected, selected_checked=selected_checked)
         else:
-            return "Brak wyników"
+            return render_template("races.html", results=results, data=data, season=season, selected=None, selected_checked=None)
 
 
     # Before choosing a season
@@ -361,8 +360,10 @@ def favorites():
     """Show all elements marked as favorite"""
 
     # Make database for users favorites
+    favorites = Favorite.query.filter_by(user_id=session["user_id"]).all()
+    favorites_list = [{"id": fav.id, "type": fav.type, "data": literal_eval(fav.data)} for fav in favorites]
 
-    return render_template("favorites.html")
+    return render_template("favorites.html", favorites=favorites_list)
 
 # Runs the app in development mode only if the script was called directly
 if __name__ == "__main__":
