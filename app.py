@@ -361,7 +361,7 @@ def favorites():
 
     # Make database for users favorites
     favorites = Favorite.query.filter_by(user_id=session["user_id"]).all()
-    favorites_list = [{"id": fav.id, "type": fav.type, "data": literal_eval(fav.data)} for fav in favorites]
+    favorites_list = [{"id": fav.id, "type": fav.type, "data": literal_eval(loads(fav.data))} for fav in favorites]
 
     if favorites_list:
             selected_id = int(request.form.get("selected_id", favorites_list[0]["id"]))

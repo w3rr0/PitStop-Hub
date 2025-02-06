@@ -17,9 +17,9 @@ main %}
         <tr {% if fav.type == "team" %} onclick="postToUrl('/favorites', {selected_id: '{{ fav.id }}'})" {% elif fav.type == "race" %} onclick="postToUrl('/favorites', {selected_id: '{{ fav.id }}'})" {% endif %}>
           <td>{{ loop.index }}</td>
           <td>
-            <img class="team-img" {% if fav.type == "team" %} src="{{ fav.logo_link }}" {% elif fav.type == "race" %} src="{{ fav.circuit_image_link }}" {% endif %} alt="{{ fav.type }}picture" />
+            <img class="team-img" {% if fav.type == "team" %} src="{{ fav.data.logo_link }}" {% elif fav.type == "race" %} src="{{ fav.data.circuit_image_link }}" {% endif %} alt="{{ fav.type }} picture" />
           </td>
-          <td>{{ fav.name or fav.circuit_name }}</td>
+          <td>{{ fav.data.name or fav.data.circuit_name }}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -29,36 +29,36 @@ main %}
   <div class="card">
     <img
       {% if selected.type == "team" %}
-      src="{{ selected.logo_link }}"
+      src="{{ selected.data.logo_link }}"
       {% elif selected.type == "race" %}
-      src="{{ selected.circuit_image_link }}"
+      src="{{ selected.data.circuit_image_link }}"
       {% endif %}
       class="card-img-top"
-      alt="{{ selected.name or selected.circuit_name }} picture"
+      alt="{{ selected.data.name or selected.data.circuit_name }} picture"
     />
     <div class="card-body">
-      <h2 class="card-title" style="padding: 5px">{{ selected.name or selected.circuit_name }}</h2>
+      <h2 class="card-title" style="padding: 5px">{{ selected.data.name or selected.data.circuit_name }}</h2>
       <div class="card-text" style="padding: 15px">
         {% if selected.type == "team" %}
-            <p>Base: {{ selected.base }}</p>
-            <p>Entry year: {{ selected.entry_year }}</p>
-            <p>Championships: {{ selected.championships }}</p>
-            <p>Pole positions: {{ selected.pole_positions }}</p>
-            <p>Fastest laps: {{ selected.fastest_laps }}</p>
-            <p>President: {{ selected.president }}</p>
-            <p>Director: {{ selected.director }}</p>
-            <p>Technical manager: {{ selected.technical_manager }}</p>
-            <p>Chassis: {{ selected.chassis }}</p>
-            <p>Engine: {{ selected.engine }}</p>
-            <p>Tyres: {{ selected.tyres }}</p>
+            <p>Base: {{ selected.data.base }}</p>
+            <p>Entry year: {{ selected.data.entry_year }}</p>
+            <p>Championships: {{ selected.data.championships }}</p>
+            <p>Pole positions: {{ selected.data.pole_positions }}</p>
+            <p>Fastest laps: {{ selected.data.fastest_laps }}</p>
+            <p>President: {{ selected.data.president }}</p>
+            <p>Director: {{ selected.data.director }}</p>
+            <p>Technical manager: {{ selected.data.technical_manager }}</p>
+            <p>Chassis: {{ selected.data.chassis }}</p>
+            <p>Engine: {{ selected.data.engine }}</p>
+            <p>Tyres: {{ selected.data.tyres }}</p>
         {% elif selected.type == "race" %}
-            <p>Date: {{ selected.date }}</p>
-            <p>Location: {{ selected.location }}</p>
-            <p>Distance: {{ selected.distance }}</p>
-            <p>Weather: {{ selected.weather }}</p>
-            <p>Best time: {{ selected.best_time }}</p>
-            <p>Laps count: {{ selected.laps_count }}</p>
-            <p>Status: {{ selected.status }}</p>
+            <p>Date: {{ selected.data.date }}</p>
+            <p>Location: {{ selected.data.location }}</p>
+            <p>Distance: {{ selected.data.distance }}</p>
+            <p>Weather: {{ selected.data.weather }}</p>
+            <p>Best time: {{ selected.data.best_time }}</p>
+            <p>Laps count: {{ selected.data.laps_count }}</p>
+            <p>Status: {{ selected.data.status }}</p>
         {% endif %}
       </div>
       <!-- Remove from favorites -->
