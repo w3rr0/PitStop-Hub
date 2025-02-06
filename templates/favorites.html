@@ -1,5 +1,79 @@
 {% extends "layout.html" %} {% block title %} Favorites {% endblock %} {% block
 main %}
 <h1>Favorites</h1>
-<p class="lead">TODO: Display favorites teams competitions etc.</p>
-{% endblock %}
+{% if favorites %}
+<div class="content-container">
+  <div class="table-wrapper">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th class="thead-custom">#</th>
+          <th class="thead-custom">Logo</th>
+          <th class="thead-custom">Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fav in favorites %}
+        <tr {% if fav.type == "team" %} onclick="postToUrl('/favorites', {selected_id: '{{ fav.id }}'})" {% elif fav.type == "race" %} onclick="postToUrl('/favorites', {selected_id: '{{ fav.id }}'})" {% endif %}>
+          <td>{{ loop.index }}</td>
+          <td>
+            <img class="team-img" {% if fav.type == "team" %} src="{{ fav.logo_link }}" {% elif fav.type == "race" %} src="{{ fav.circuit_image_link }}" {% endif %} alt="Picture" />
+          </td>
+          <td>{{ fav.name or fav.circuit_name }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <!-- Card with team preview -->
+  <div class="card">
+    <img
+      {% if selected.type == "team" %}
+      src="{{ selected.logo_link }}"
+      {% elif selected.type == "race" %}
+      src="{{ selected.circuit_image_link }}"
+      {% endif %}
+      class="card-img-top"
+      alt="{{ selected.name or selected.circuit_name }} picture"
+    />
+    <div class="card-body">
+      <h2 class="card-title" style="padding: 5px">{{ selected.name or selected.circuit_name }}</h2>
+      <div class="card-text" style="padding: 15px">
+        {% if selected.type == "team" %}
+            <p>Base: {{ selected.base }}</p>
+            <p>Entry year: {{ selected.entry_year }}</p>
+            <p>Championships: {{ selected.championships }}</p>
+            <p>Pole positions: {{ selected.pole_positions }}</p>
+            <p>Fastest laps: {{ selected.fastest_laps }}</p>
+            <p>President: {{ selected.president }}</p>
+            <p>Director: {{ selected.director }}</p>
+            <p>Technical manager: {{ selected.technical_manager }}</p>
+            <p>Chassis: {{ selected.chassis }}</p>
+            <p>Engine: {{ selected.engine }}</p>
+            <p>Tyres: {{ selected.tyres }}</p>
+        {% elif selected.type == "race" %}
+            <p>Date: {{ selected.date }}</p>
+            <p>Location: {{ selected.location }}</p>
+            <p>Distance: {{ selected.distance }}</p>
+            <p>Weather: {{ selected.weather }}</p>
+            <p>Best time: {{ selected.best_time }}</p>
+            <p>Laps count: {{ selected.laps_count }}</p>
+            <p>Status: {{ selected.status }}</p>
+        {% endif %}
+      </div>
+      <!-- Remove from favorites -->
+      <form action="/add-favorite" method="POST">
+        <!-- Data needed to add a favorite -->
+        <input type="hidden" name="type" value="{{ selected.type }}" />
+        <input type="hidden" name="selected" value="{{ selected }}" />
+        <!-- Confirm adding to favorites -->
+        <button type="submit" class="btn btn-warning" style="padding: 10px">
+          Remove from favorites ❌
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% else %}
+<p>Add your first favorite to see it here</p>
+{% endif %} {% endblock %}
