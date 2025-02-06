@@ -83,8 +83,6 @@ def after_request(response):
 def add_favorite():
     """Add an element to favorites"""
 
-    print("Favorite added!")
-
     # Data needed to add a favorite
     selected = request.form.get("selected")
     data_type = request.form.get("type")
@@ -110,14 +108,18 @@ def add_favorite():
             if literal_eval(loads(fav.data))["id"] == literal_eval(selected)["id"]:
                 db.session.delete(fav)
                 db.session.commit()
+                print("Favorite removed")
                 break
     else:
         # Add to favorites
         new_favorite = Favorite(type=data_type, data=dumps(selected), user_id=session["user_id"])
         db.session.add(new_favorite)
         db.session.commit()
+        print("Favorite added")
 
-    if data_type == "race":
+    if not results:
+        return redirect("/favorites")
+    elif data_type == "race":
         return render_template("races.html", results=int(results), data=literal_eval(data), season=int(season), selected=literal_eval(selected), selected_checked=not selected_checked)
     elif data_type == "team":
         return render_template("teams.html", results=int(results), data=literal_eval(data), selected=literal_eval(selected), selected_checked=not selected_checked)
