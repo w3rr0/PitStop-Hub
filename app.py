@@ -12,7 +12,7 @@ from helpers import login_required
 # For database
 from flask_sqlalchemy import SQLAlchemy
 # For converting dict to JSON
-from json import dumps, loads
+from json import dumps, loads, JSONDecodeError
 from ast import literal_eval
 
 # Configure application
@@ -105,7 +105,7 @@ def add_favorite():
         # Remove from favorites
         favorite_to_remove = Favorite.query.filter_by(type=data_type, user_id=session["user_id"]).all()
         for fav in favorite_to_remove:
-            if literal_eval(loads(fav.data))["id"] == literal_eval(selected)["id"]:
+            if (loads(fav.data))["id"] == literal_eval(selected)["id"]:
                 db.session.delete(fav)
                 db.session.commit()
                 print("Favorite removed")
@@ -368,7 +368,23 @@ def favorites():
 
     # Make database for users favorites
     favorites = Favorite.query.filter_by(user_id=session["user_id"]).all()
-    favorites_list = [{"id": fav.id, "type": fav.type, "data": literal_eval(loads(fav.data))} for fav in favorites]
+
+    for fav in favorites:
+        print(repr(fav.data))  # Check if data is stored correctly
+
+    def safe_parse_data(data):
+        """Funkcja poprawnie parsująca JSON lub Python dict zapisany jako string"""
+        if isinstance(data, dict):
+            return data  # If already a dict, return it
+        
+        data = data.strip('"')  # Delete unnecessary quotes
+
+        try:
+            return loads(data)  # Try to parse as JSON
+        except JSONDecodeError:
+            return literal_eval(data)
+
+    favorites_list = [{"id": fav.id, "type": fav.type, "data": safe_parse_data(fav.data)} for fav in favorites]
 
     if favorites_list:
             selected_id = int(request.form.get("selected_id", favorites_list[0]["id"]))
