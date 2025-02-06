@@ -354,7 +354,7 @@ def races():
         return render_template("races.html", results=results, seasons=seasons)
     
 
-@app.route("/favorites")
+@app.route("/favorites", methods=["GET", "POST"])
 @login_required
 def favorites():
     """Show all elements marked as favorite"""
@@ -363,7 +363,14 @@ def favorites():
     favorites = Favorite.query.filter_by(user_id=session["user_id"]).all()
     favorites_list = [{"id": fav.id, "type": fav.type, "data": literal_eval(fav.data)} for fav in favorites]
 
-    return render_template("favorites.html", favorites=favorites_list)
+    if favorites_list:
+            selected_id = int(request.form.get("selected_id", favorites_list[0]["id"]))
+            for element in favorites_list:
+                if element["id"] == selected_id:
+                    selected = element
+                    break
+
+    return render_template("favorites.html", favorites=favorites_list, selected=selected)
 
 # Runs the app in development mode only if the script was called directly
 if __name__ == "__main__":

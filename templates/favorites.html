@@ -76,4 +76,8 @@ main %}
 </div>
 {% else %}
 <p>Add your first favorite to see it here</p>
-{% endif %} {% endblock %}
+{% endif %}
+
+<!-- Load JavaScript file -->
+<script src="{{ url_for('static', filename='send_data.js') }}"></script>
+{% endblock %}
