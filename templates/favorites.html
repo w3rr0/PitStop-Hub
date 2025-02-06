@@ -17,7 +17,7 @@ main %}
         <tr {% if fav.type == "team" %} onclick="postToUrl('/favorites', {selected_id: '{{ fav.id }}'})" {% elif fav.type == "race" %} onclick="postToUrl('/favorites', {selected_id: '{{ fav.id }}'})" {% endif %}>
           <td>{{ loop.index }}</td>
           <td>
-            <img class="team-img" {% if fav.type == "team" %} src="{{ fav.logo_link }}" {% elif fav.type == "race" %} src="{{ fav.circuit_image_link }}" {% endif %} alt="Picture" />
+            <img class="team-img" {% if fav.type == "team" %} src="{{ fav.logo_link }}" {% elif fav.type == "race" %} src="{{ fav.circuit_image_link }}" {% endif %} alt="{{ fav.type }}picture" />
           </td>
           <td>{{ fav.name or fav.circuit_name }}</td>
         </tr>
