@@ -105,7 +105,12 @@ def add_favorite():
     # Check if favorite is already in the database
     if selected_checked:
         # Remove from favorites
-        pass
+        favorite_to_remove = Favorite.query.filter_by(type=data_type, user_id=session["user_id"]).all()
+        for fav in favorite_to_remove:
+            if literal_eval(loads(fav.data))["id"] == literal_eval(selected)["id"]:
+                db.session.delete(fav)
+                db.session.commit()
+                break
     else:
         # Add to favorites
         new_favorite = Favorite(type=data_type, data=dumps(selected), user_id=session["user_id"])
