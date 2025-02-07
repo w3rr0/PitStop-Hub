@@ -1,6 +1,6 @@
 # PitStop Hub
 
-#### Video Demo: <>
+#### Video Demo: <https://youtu.be/tM6mSWw6S7s>
 
 ## Description:
 
